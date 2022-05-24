@@ -1,0 +1,16 @@
+{
+    "name": "cyrille/mvc",
+    "autoload": {
+        "psr-4": {
+            "Cyrille\\Mvc\\": "src/",
+            "app\\":"./"
+        }
+    },
+    "authors": [
+        {
+            "name": "cyrille",
+            "email": "cyrilleotieno7@gmail.com"
+        }
+    ],
+    "require": {}
+}
