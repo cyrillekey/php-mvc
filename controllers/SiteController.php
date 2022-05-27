@@ -4,6 +4,7 @@ namespace app\controllers;
 use app\core\Application;
 use app\core\BaseController;
 use app\core\Request;
+use app\models\RegisterModel;
 
 class SiteController extends BaseController{
     public function home(){
@@ -16,9 +17,12 @@ class SiteController extends BaseController{
         return $this->render('contact');
     }
     public function handleContact(Request $request){
-        $body=$request->getBody();
-        var_dump($body);
-        return 'Handling dorm';
+        $registerModel=new RegisterModel();
+        $registerModel->loadData($request->getBody());
+        
+        $registerModel->validate();
+        
+        return $this->render('contact',['model'=>$registerModel]);
     }
 }
 ?>
