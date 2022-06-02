@@ -8,5 +8,9 @@ class BaseController{
     public function setLayout($layout){
 
     }
+    public function renderString($content){
+        return Application::$app->router->renderContent($content);
+    }
 }
+
 ?>

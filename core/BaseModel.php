@@ -32,7 +32,7 @@ abstract class BaseModel{
                     
                 }
                 if($ruleName==self::RULE_REQUIRED && !$value){       
-                    $this->addError($attribute,self::RULE_REQUIRED);
+                    $this->addError($attribute,self::RULE_REQUIRED,$rule);
                 }
                 if($ruleName==self::RULE_EMAIL && !filter_var($value,FILTER_VALIDATE_EMAIL)){       
                     $this->addError($attribute,self::RULE_EMAIL);
@@ -56,6 +56,13 @@ abstract class BaseModel{
     self::MATCH=>'match'
     
         ];
+    }
+    public function hasError($attribute){
+        return $this->errors[$attribute] ?? false;
+    }
+    public function getFirstError($attribute){
+        $errors=$this->errors[$attribute] ?? [];
+        return $errors[0] ?? '';
     }
 }
 ?>

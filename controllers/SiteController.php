@@ -14,13 +14,17 @@ class SiteController extends BaseController{
         return $this->render('home',$params);
     }
     public function contact(){
-        return $this->render('contact');
+        $registerModel=new RegisterModel();
+        return $this->render('contact',['model'=>$registerModel]);
     }
     public function handleContact(Request $request){
         $registerModel=new RegisterModel();
         $registerModel->loadData($request->getBody());
         
-        $registerModel->validate();
+        if($registerModel->validate()){
+            return $this->renderString("Success");
+            exit;
+        }
         
         return $this->render('contact',['model'=>$registerModel]);
     }
