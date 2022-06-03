@@ -59,5 +59,8 @@ class Database{
     {
         echo '['.date('Y-m-d H:i:s').'] '.$var;
     }
+    public function prepare($sql){
+        return $this->pdo->prepare($sql);
+    }
 }
 ?>

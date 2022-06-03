@@ -17,12 +17,13 @@ class SiteController extends BaseController{
         $registerModel=new RegisterModel();
         return $this->render('contact',['model'=>$registerModel]);
     }
+    
     public function handleContact(Request $request){
         $registerModel=new RegisterModel();
         $registerModel->loadData($request->getBody());
         
-        if($registerModel->validate()){
-            return $this->renderString("Success");
+        if($registerModel->validate() && $registerModel->save()){
+            Application::$app->response->redirect("/contact");
             exit;
         }
         

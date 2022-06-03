@@ -7,6 +7,7 @@ abstract class BaseModel{
     public const RULE_MIN='min';
     public const RULE_MAX='max';
     public const MATCH='match';
+    public const UNIQUE='unique';
     abstract public function rules():array;
     public function loadData($data){
         foreach($data as $key=>$value){
@@ -31,17 +32,28 @@ abstract class BaseModel{
                     $ruleName=$rule[0];
                     
                 }
-                if($ruleName==self::RULE_REQUIRED && !$value){       
+                if($ruleName===self::RULE_REQUIRED && !$value){       
                     $this->addError($attribute,self::RULE_REQUIRED,$rule);
                 }
-                if($ruleName==self::RULE_EMAIL && !filter_var($value,FILTER_VALIDATE_EMAIL)){       
+                if($ruleName===self::RULE_EMAIL && !filter_var($value,FILTER_VALIDATE_EMAIL)){       
                     $this->addError($attribute,self::RULE_EMAIL);
                 }
-                if($ruleName==self::RULE_MIN && strlen($value)<$rule['min']){       
+                if($ruleName===self::RULE_MIN && strlen($value)<$rule['min']){       
                     $this->addError($attribute,self::RULE_MIN,$rule);
                 }
-                if($ruleName==self::RULE_MAX && strlen($value)>$rule['max']){       
+                if($ruleName===self::RULE_MAX && strlen($value)>$rule['max']){       
                     $this->addError($attribute,self::RULE_MAX,$rule);
+                }
+                if($ruleName===self::UNIQUE){
+                    $className=$rule['class'];
+                    $tableName=$className::tableName();
+                    $stmt=Application::$app->db->prepare("SELECT * FROM $tableName WHERE $attribute = :attribute");
+                    $stmt->bindValue(":attribute",$value);
+                    $stmt->execute();
+                    $record=$stmt->fetchObject();
+                    if($record){
+                        $this->addError($attribute,self::UNIQUE,['field'=>$value]);
+                    }
                 }
             }
         }
@@ -53,7 +65,8 @@ abstract class BaseModel{
     self::RULE_EMAIL=>'Invalid Email',
     self::RULE_MIN=>'min {min}',
     self::RULE_MAX=>'max {max}',
-    self::MATCH=>'match'
+    self::MATCH=>'match',
+    self::UNIQUE=> 'Record with {field} already exists'
     
         ];
     }
@@ -64,5 +77,6 @@ abstract class BaseModel{
         $errors=$this->errors[$attribute] ?? [];
         return $errors[0] ?? '';
     }
+    
 }
 ?>
